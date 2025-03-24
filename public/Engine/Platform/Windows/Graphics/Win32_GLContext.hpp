@@ -28,8 +28,9 @@ namespace engine::platform::win32 {
         HWND GetHwnd() { return (HWND) m_OwnerWindow->GetHandle(); }
 
         HGLRC h_GlCtx;
+        HDC h_DeviceCtx;
+
         std::unique_ptr<core::runtime::graphics::IGraphicsBackend> m_Backend;
         Win32Window* m_OwnerWindow;
-        HDC h_DeviceCtx;
     };
 }

@@ -1,8 +1,10 @@
 #define SHOW_PRIVATE_API
 
 #include <Engine/Platform/Windows/Input/Win32_MouseDevice.hpp>
-#include <Engine/Core/Runtime/Input/InputManager.hpp>
-#include <Engine/Core/Runtime/Input/InputEvent.hpp>
+#include <Engine/Input/InputManager.hpp>
+
+// import FNV hashing for input name hashing
+#include <Engine/Core/Hashing/FNV.hpp>
 
 namespace engine::platform::win32 {
     bool Win32MouseDevice::Initialize() {
@@ -20,66 +22,21 @@ namespace engine::platform::win32 {
     LRESULT Win32MouseDevice::WinProc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
         if (uMsg == WM_MOUSEMOVE) {
             SET_MOUSE_POS:
-            core::runtime::input::InputManager::Instance()->PushEvent(
-                    new core::runtime::input::MouseMoveEvent(
-                            this,
-                            {
-                                    (float) LOWORD(lParam),
-                                    (float) HIWORD(lParam)
-                            }
-                    )
-            );
-
+            input::InputManager::Instance()->PushMousePosition({(float) LOWORD(lParam), (float) HIWORD(lParam)});
             return 0;
         } else {
             switch (uMsg) {
                 case WM_LBUTTONDOWN:
-                    core::runtime::input::InputManager::Instance()->PushEvent(
-                            new core::runtime::input::MouseButtonDownEvent(
-                                    this,
-                                    core::runtime::input::INPUT_DEVICE_BUTTON_MOUSE_LEFT
-                            )
-                    );
-                    goto SET_MOUSE_POS;
                 case WM_LBUTTONUP:
-                    core::runtime::input::InputManager::Instance()->PushEvent(
-                            new core::runtime::input::MouseButtonUpEvent(
-                                    this,
-                                    core::runtime::input::INPUT_DEVICE_BUTTON_MOUSE_LEFT
-                            )
-                    );
+                    input::InputManager::Instance()->PushKeyStateChange(engine::FNVConstHash("Mouse_Left"), uMsg == WM_LBUTTONDOWN);
                     goto SET_MOUSE_POS;
                 case WM_MBUTTONDOWN:
-                    core::runtime::input::InputManager::Instance()->PushEvent(
-                            new core::runtime::input::MouseButtonDownEvent(
-                                    this,
-                                    core::runtime::input::INPUT_DEVICE_BUTTON_MOUSE_MIDDLE
-                            )
-                    );
-                    goto SET_MOUSE_POS;
                 case WM_MBUTTONUP:
-                    core::runtime::input::InputManager::Instance()->PushEvent(
-                            new core::runtime::input::MouseButtonUpEvent(
-                                    this,
-                                    core::runtime::input::INPUT_DEVICE_BUTTON_MOUSE_MIDDLE
-                            )
-                    );
+                    input::InputManager::Instance()->PushKeyStateChange(engine::FNVConstHash("Mouse_Middle"), uMsg == WM_MBUTTONDOWN);
                     goto SET_MOUSE_POS;
                 case WM_RBUTTONDOWN:
-                    core::runtime::input::InputManager::Instance()->PushEvent(
-                            new core::runtime::input::MouseButtonDownEvent(
-                                    this,
-                                    core::runtime::input::INPUT_DEVICE_BUTTON_MOUSE_RIGHT
-                            )
-                    );
-                    goto SET_MOUSE_POS;
                 case WM_RBUTTONUP:
-                    core::runtime::input::InputManager::Instance()->PushEvent(
-                            new core::runtime::input::MouseButtonUpEvent(
-                                    this,
-                                    core::runtime::input::INPUT_DEVICE_BUTTON_MOUSE_RIGHT
-                            )
-                    );
+                    input::InputManager::Instance()->PushKeyStateChange(engine::FNVConstHash("Mouse_Right"), uMsg == WM_RBUTTONDOWN);
                     goto SET_MOUSE_POS;
                 default:
                     break;

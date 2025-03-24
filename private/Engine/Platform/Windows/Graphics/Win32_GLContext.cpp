@@ -13,7 +13,7 @@ namespace engine::platform::win32 {
 
         pfd.nSize = sizeof(PIXELFORMATDESCRIPTOR);
         pfd.nVersion = 1;
-        pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_SUPPORT_OPENGL | PFD_DOUBLEBUFFER;
+        pfd.dwFlags = PFD_DRAW_TO_WINDOW | PFD_DOUBLEBUFFER | PFD_SUPPORT_OPENGL;
         pfd.iPixelType = PFD_TYPE_RGBA;
         pfd.cColorBits = 24;
 

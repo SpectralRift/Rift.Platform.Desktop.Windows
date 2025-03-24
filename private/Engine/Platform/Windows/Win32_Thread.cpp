@@ -1,6 +1,10 @@
 #include <Engine/Platform/Windows/Win32_Thread.hpp>
 
+#include <Engine/Runtime/Logger.hpp>
+
 namespace engine::platform::win32 {
+    static runtime::Logger g_LoggerWin32Thread("Win32Thread");
+
     Win32Thread::~Win32Thread() {
         if (m_ThreadHandle) {
             Stop();
@@ -10,14 +14,15 @@ namespace engine::platform::win32 {
     }
 
     void Win32Thread::Start() {
-        printf("Win32Thread: Beginning thread '%s'\n", m_ThreadName.c_str());
+        g_LoggerWin32Thread.Log(runtime::LOG_LEVEL_DEBUG, "Beginning thread '%s'", m_ThreadName.c_str());
 
         if (b_IsRunning) {
-            printf("Win32Thread: Thread '%s' is already running.\n", m_ThreadName.c_str());
+            g_LoggerWin32Thread.Log(runtime::LOG_LEVEL_WARNING, "Thread '%s' is already running.", m_ThreadName.c_str());
+            return;
         }
 
         if (!m_TaskFunc) {
-            printf("Win32Thread: Task function for '%s' is not set.\n", m_ThreadName.c_str());
+            g_LoggerWin32Thread.Log(runtime::LOG_LEVEL_ERROR, "Task function for '%s' is not set.", m_ThreadName.c_str());
         }
 
         b_IsRunning = true;
@@ -25,14 +30,14 @@ namespace engine::platform::win32 {
 
         if (!m_ThreadHandle) {
             b_IsRunning = false;
-            printf("Win32Thread: Failed to create thread '%s.\n", m_ThreadName.c_str());
+            g_LoggerWin32Thread.Log(runtime::LOG_LEVEL_ERROR, "Failed to create thread '%s.", m_ThreadName.c_str());
         }
 
-        printf("Win32Thread: Started thread '%s'\n", m_ThreadName.c_str());
+        g_LoggerWin32Thread.Log(runtime::LOG_LEVEL_INFO, "Started thread '%s'", m_ThreadName.c_str());
     }
 
     void Win32Thread::Stop() {
-        printf("Win32Thread: Stopping thread '%s'\n", m_ThreadName.c_str());
+        g_LoggerWin32Thread.Log(runtime::LOG_LEVEL_INFO, "Stopping thread '%s'", m_ThreadName.c_str());
 
         if (b_IsRunning) {
             b_IsRunning = false;

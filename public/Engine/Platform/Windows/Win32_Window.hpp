@@ -9,6 +9,7 @@
 
 namespace engine::platform::win32 {
     struct Win32MouseDevice;
+    struct Win32KeyboardDevice;
 
     struct Win32Window : public core::runtime::IWindow {
         Win32Window() : h_Window(nullptr), h_DevContext(nullptr), b_IsQuit(false) {}
@@ -51,8 +52,10 @@ namespace engine::platform::win32 {
     protected:
         HWND h_Window;
         HDC h_DevContext;
+
         std::unique_ptr<core::runtime::graphics::IGraphicsContext> h_GraphicsContext;
         std::shared_ptr<Win32MouseDevice> m_MouseDevice;
+        std::shared_ptr<Win32KeyboardDevice> m_KeyboardDevice;
 
         static bool b_IsWinClassRegistered;
         bool b_IsQuit;

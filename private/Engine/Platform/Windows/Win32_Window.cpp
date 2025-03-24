@@ -1,9 +1,10 @@
 #include <Engine/Platform/Windows/Win32_Window.hpp>
 
 #include <Engine/Platform/Windows/Graphics/Win32_GLContext.hpp>
-//#include <Engine/Platform/Windows/Graphics/Win32_DX9Context.hpp>
+#include <Engine/Platform/Windows/Graphics/Win32_DX9Context.hpp>
 
 #include <Engine/Platform/Windows/Input/Win32_MouseDevice.hpp>
+#include <Engine/Platform/Windows/Input/Win32_KeyboardDevice.hpp>
 
 #include <Engine/Core/Runtime/Input/InputManager.hpp>
 
@@ -41,8 +42,8 @@ namespace engine::platform::win32 {
         // set window user pointer to this
         SetWindowLongA(h_Window, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 
-//            h_GraphicsContext = std::make_unique<Win32DX9Context>(h_Window);
-        h_GraphicsContext = std::make_unique<Win32GLContext>(this);
+        h_GraphicsContext = std::make_unique<Win32DX9Context>(this);
+//        h_GraphicsContext = std::make_unique<Win32GLContext>(this);
 //        h_GraphicsContext = std::make_unique<platform::universal::UEGLContext>(this);
 
         // decide what graphical context to use depending on preferred backend.
@@ -62,8 +63,11 @@ namespace engine::platform::win32 {
             return false;
         }
 
-        m_MouseDevice = std::make_unique<Win32MouseDevice>(this);
+        m_MouseDevice = std::make_shared<Win32MouseDevice>(this);
+        m_KeyboardDevice = std::make_shared<Win32KeyboardDevice>(this);
+
         core::runtime::input::InputManager::Instance()->RegisterDevice(m_MouseDevice.get());
+        core::runtime::input::InputManager::Instance()->RegisterDevice(m_KeyboardDevice.get());
 
         b_IsQuit = false;
 
@@ -72,8 +76,11 @@ namespace engine::platform::win32 {
 
     void Win32Window::Destroy() {
         if (m_MouseDevice) {
-            // no need to call m_MouseDevice->Destroy() as it's already called by the InputManager
             core::runtime::input::InputManager::Instance()->UnregisterDevice(m_MouseDevice.get());
+        }
+
+        if (m_KeyboardDevice) {
+            core::runtime::input::InputManager::Instance()->UnregisterDevice(m_KeyboardDevice.get());
         }
 
         if (h_GraphicsContext) {
@@ -156,9 +163,18 @@ namespace engine::platform::win32 {
     }
 
     LRESULT CALLBACK Win32Window::WindowProc(HWND h_Window, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-        Win32Window *window = reinterpret_cast<Win32Window *>(GetWindowLongPtr(h_Window, GWLP_USERDATA));
+        auto window = reinterpret_cast<Win32Window *>(GetWindowLongPtr(h_Window, GWLP_USERDATA));
 
         if (window) {
+            if (uMsg == WM_SIZE) {
+                auto dxCtx = dynamic_cast<Win32DX9Context *>(window->h_GraphicsContext.get());
+
+                if (dxCtx) {
+                    dxCtx->Resize({(float) LOWORD(lParam), (float) HIWORD(lParam)});
+                    return 0;
+                }
+            }
+
             switch (uMsg) {
                 case WM_DESTROY:
                 case WM_CLOSE:
@@ -166,6 +182,10 @@ namespace engine::platform::win32 {
                     return 0;
                 default:
                     if (window->m_MouseDevice->WinProc(h_Window, uMsg, wParam, lParam) == 0) {
+                        return 0;
+                    }
+
+                    if (window->m_KeyboardDevice->WinProc(h_Window, uMsg, wParam, lParam) == 0) {
                         return 0;
                     }
 
