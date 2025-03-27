@@ -1,9 +1,15 @@
 #include <Windows.h>
 
+// undefine CreateMutex to avoid naming conflicts
+#ifdef CreateMutex
+#undef CreateMutex
+#endif
+
 #include <Engine/Core/Platform.hpp>
 
 #include <Engine/Platform/Windows/Win32_Window.hpp>
 #include <Engine/Platform/Windows/Win32_Thread.hpp>
+#include <Engine/Platform/Windows/Win32_Mutex.hpp>
 
 namespace engine::core::Platform {
     std::string GetName() {
@@ -24,6 +30,14 @@ namespace engine::core::Platform {
 
     std::unique_ptr<runtime::IThread> CreateThread() {
         return std::make_unique<platform::win32::Win32Thread>();
+    }
+
+    std::unique_ptr<runtime::IMutex> CreateMutex() {
+        return std::make_unique<platform::win32::Win32Mutex>();
+    }
+
+    std::shared_ptr<input::IVirtualKeyboard> GetVirtualKeyboard() {
+        return nullptr;
     }
 
     void Init() {

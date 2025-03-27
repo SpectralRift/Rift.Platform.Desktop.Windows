@@ -10,6 +10,7 @@ add_library(
         private/Engine/Platform/Windows/Input/Win32_MouseDevice.cpp
         private/Engine/Platform/Windows/Input/Win32_KeyboardDevice.cpp
         private/Engine/Platform/Windows/Win32_Thread.cpp
+        private/Engine/Platform/Windows/Win32_Mutex.cpp
         private/Engine/Platform/Windows/Graphics/Win32_DX9Context.cpp
 )
 

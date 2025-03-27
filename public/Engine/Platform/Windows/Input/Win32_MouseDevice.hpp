@@ -1,10 +1,10 @@
 #pragma once
 
-#include <Engine/Core/Runtime/Input/IInputDevice.hpp>
+#include <Engine/Input/IInputDevice.hpp>
 #include <Engine/Platform/Windows/Win32_Window.hpp>
 
 namespace engine::platform::win32 {
-    struct Win32MouseDevice : public core::runtime::input::IAxisDevice {
+    struct Win32MouseDevice : public input::IInputDevice {
         Win32MouseDevice(Win32Window *window) : m_Window{window}, m_MousePosition{}, m_StateMouseLeft{false},
                                                 m_StateMouseRight{false}, m_StateMouseMiddle{false} {
 
@@ -20,9 +20,9 @@ namespace engine::platform::win32 {
             return "Win32 Native Mouse Device";
         }
 
-        core::runtime::input::InputDeviceType GetType() const override {
-            return core::runtime::input::InputDeviceType::INPUT_DEVICE_TYPE_MOUSE;
-        }
+//        core::runtime::input::InputDeviceType GetType() const override {
+//            return core::runtime::input::InputDeviceType::INPUT_DEVICE_TYPE_MOUSE;
+//        }
 
         int GetPlayerId() override {
             return 0;

@@ -6,7 +6,7 @@
 #include <Engine/Platform/Windows/Input/Win32_MouseDevice.hpp>
 #include <Engine/Platform/Windows/Input/Win32_KeyboardDevice.hpp>
 
-#include <Engine/Core/Runtime/Input/InputManager.hpp>
+#include <Engine/Input/InputManager.hpp>
 
 namespace engine::platform::win32 {
     bool Win32Window::b_IsWinClassRegistered{false};
@@ -66,8 +66,8 @@ namespace engine::platform::win32 {
         m_MouseDevice = std::make_shared<Win32MouseDevice>(this);
         m_KeyboardDevice = std::make_shared<Win32KeyboardDevice>(this);
 
-        core::runtime::input::InputManager::Instance()->RegisterDevice(m_MouseDevice.get());
-        core::runtime::input::InputManager::Instance()->RegisterDevice(m_KeyboardDevice.get());
+        input::InputManager::Instance()->RegisterDevice(m_MouseDevice.get());
+        input::InputManager::Instance()->RegisterDevice(m_KeyboardDevice.get());
 
         b_IsQuit = false;
 
@@ -76,11 +76,11 @@ namespace engine::platform::win32 {
 
     void Win32Window::Destroy() {
         if (m_MouseDevice) {
-            core::runtime::input::InputManager::Instance()->UnregisterDevice(m_MouseDevice.get());
+            input::InputManager::Instance()->UnregisterDevice(m_MouseDevice.get());
         }
 
         if (m_KeyboardDevice) {
-            core::runtime::input::InputManager::Instance()->UnregisterDevice(m_KeyboardDevice.get());
+            input::InputManager::Instance()->UnregisterDevice(m_KeyboardDevice.get());
         }
 
         if (h_GraphicsContext) {
