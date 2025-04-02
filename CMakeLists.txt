@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.14)
 project(Rift_Platform_Desktop_Windows VERSION 0.1.1)
 
+set(PLATFORM_WINDOWS_USE_WINDOWED_SUBSYSTEM FALSE)
+
 add_library(
         Rift_Platform_Desktop_Windows
         STATIC
@@ -20,5 +22,11 @@ target_include_directories(
         PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/public"
         PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/private"
 )
+
+if (PLATFORM_WINDOWS_USE_WINDOWED_SUBSYSTEM)
+    # configure parent project to use windows subsystem
+    target_compile_definitions(Rift_Platform_Desktop_Windows PUBLIC USE_WINDOWED_SUBSYSTEM)
+    set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
+endif ()
 
 target_link_libraries(Rift_Platform_Desktop_Windows RiftEngine_Core_Runtime RiftEngine_Backend_OpenGL Rift_Input Rift_Backend_D3D9 Rift_Runtime_Logging)
