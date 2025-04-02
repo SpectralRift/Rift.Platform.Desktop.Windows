@@ -6,6 +6,7 @@
 #endif
 
 #include <Engine/Core/Platform.hpp>
+#include <Engine/Core/Runtime/DesktopHost.hpp>
 
 #include <Engine/Platform/Windows/Win32_Window.hpp>
 #include <Engine/Platform/Windows/Win32_Thread.hpp>
@@ -21,7 +22,7 @@ namespace engine::core::Platform {
     }
 
     std::unique_ptr<runtime::AppHost> GetSuitableHost() {
-        return nullptr;
+        return std::make_unique<runtime::DesktopHost>();
     }
 
     std::unique_ptr<runtime::IWindow> CreateAppWindow() {

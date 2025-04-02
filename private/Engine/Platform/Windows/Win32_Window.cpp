@@ -42,20 +42,10 @@ namespace engine::platform::win32 {
         // set window user pointer to this
         SetWindowLongA(h_Window, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 
-        h_GraphicsContext = std::make_unique<Win32DX9Context>(this);
-//        h_GraphicsContext = std::make_unique<Win32GLContext>(this);
+//        h_GraphicsContext = std::make_unique<Win32DX9Context>(this);
+        h_GraphicsContext = std::make_unique<Win32GLContext>(this);
 //        h_GraphicsContext = std::make_unique<platform::universal::UEGLContext>(this);
 
-        // decide what graphical context to use depending on preferred backend.
-//            auto backendName = core::graphics::GraphicsBackend::get()->getIdentifierName();
-//
-//            if (backendName == "opengl") {
-//                m_GfxContext = std::make_unique<Win32GLContext>(h_Window);
-//            } else {
-//                printf("Unsupported backend: %s\n", backendName.data());
-//                return false;
-//            }
-//
         h_DevContext = GetDC(h_Window);
 
         if (!h_GraphicsContext->Create()) {
