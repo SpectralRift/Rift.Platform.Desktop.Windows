@@ -1,7 +1,7 @@
 #include <Engine/Platform/Windows/Win32_Window.hpp>
 
 #include <Engine/Platform/Windows/Graphics/Win32_GLContext.hpp>
-#include <Engine/Platform/Windows/Graphics/Win32_DX9Context.hpp>
+#include <Engine/Platform/Windows/Graphics/Win32_D3D9Context.hpp>
 
 #include <Engine/Platform/Windows/Input/Win32_MouseDevice.hpp>
 #include <Engine/Platform/Windows/Input/Win32_KeyboardDevice.hpp>
@@ -157,7 +157,7 @@ namespace engine::platform::win32 {
 
         if (window) {
             if (uMsg == WM_SIZE) {
-                auto dxCtx = dynamic_cast<Win32DX9Context *>(window->h_GraphicsContext.get());
+                auto dxCtx = dynamic_cast<Win32D3D9Context *>(window->h_GraphicsContext.get());
 
                 if (dxCtx) {
                     dxCtx->Resize({(float) LOWORD(lParam), (float) HIWORD(lParam)});

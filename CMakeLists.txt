@@ -12,7 +12,7 @@ add_library(
         private/Engine/Platform/Windows/Win32_Thread.cpp
         private/Engine/Platform/Windows/Win32_Mutex.cpp
         private/Engine/Platform/Windows/Win32_EngineMain.cpp
-        private/Engine/Platform/Windows/Graphics/Win32_DX9Context.cpp
+        private/Engine/Platform/Windows/Graphics/Win32_D3D9Context.cpp
 )
 
 target_include_directories(
@@ -21,4 +21,4 @@ target_include_directories(
         PRIVATE "${CMAKE_CURRENT_SOURCE_DIR}/private"
 )
 
-target_link_libraries(Rift_Platform_Desktop_Windows RiftEngine_Core_Runtime RiftEngine_Backend_OpenGL Rift_Input Rift_Backend_DX9 Rift_Runtime_Logging)
+target_link_libraries(Rift_Platform_Desktop_Windows RiftEngine_Core_Runtime RiftEngine_Backend_OpenGL Rift_Input Rift_Backend_D3D9 Rift_Runtime_Logging)
