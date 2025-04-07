@@ -1,7 +1,10 @@
 #include <Engine/Platform/Windows/Win32_Window.hpp>
 
 #include <Engine/Platform/Windows/Graphics/Win32_GLContext.hpp>
+
+#ifdef BACKEND_D3D9_ENABLED
 #include <Engine/Platform/Windows/Graphics/Win32_D3D9Context.hpp>
+#endif
 
 #include <Engine/Platform/Windows/Input/Win32_MouseDevice.hpp>
 #include <Engine/Platform/Windows/Input/Win32_KeyboardDevice.hpp>
@@ -42,7 +45,9 @@ namespace engine::platform::win32 {
         // set window user pointer to this
         SetWindowLongA(h_Window, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
 
+#ifdef BACKEND_D3D9_ENABLED
 //        h_GraphicsContext = std::make_unique<Win32DX9Context>(this);
+#endif
         h_GraphicsContext = std::make_unique<Win32GLContext>(this);
 //        h_GraphicsContext = std::make_unique<platform::universal::UEGLContext>(this);
 
@@ -93,13 +98,13 @@ namespace engine::platform::win32 {
 
     void Win32Window::SetPosition(const core::math::Vector2 &position) {
         if (h_Window) {
-            SetWindowPos(h_Window, nullptr, position.x, position.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+            SetWindowPos(h_Window, nullptr, (int) position.x, (int) position.y, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
         }
     }
 
     void Win32Window::SetSize(const core::math::Vector2 &size) {
         if (h_Window) {
-            SetWindowPos(h_Window, nullptr, 0, 0, size.x, size.y, SWP_NOMOVE | SWP_NOZORDER);
+            SetWindowPos(h_Window, nullptr, 0, 0, (int) size.x, (int) size.y, SWP_NOMOVE | SWP_NOZORDER);
         }
     }
 
@@ -157,12 +162,14 @@ namespace engine::platform::win32 {
 
         if (window) {
             if (uMsg == WM_SIZE) {
+#ifdef BACKEND_D3D9_ENABLED
                 auto dxCtx = dynamic_cast<Win32D3D9Context *>(window->h_GraphicsContext.get());
 
                 if (dxCtx) {
                     dxCtx->Resize({(float) LOWORD(lParam), (float) HIWORD(lParam)});
                     return 0;
                 }
+#endif
             }
 
             switch (uMsg) {
