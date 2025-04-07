@@ -29,4 +29,6 @@ if (PLATFORM_WINDOWS_USE_WINDOWED_SUBSYSTEM)
     set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
 endif ()
 
-target_link_libraries(Rift_Platform_Desktop_Windows RiftEngine_Core_Runtime RiftEngine_Backend_OpenGL Rift_Input Rift_Backend_D3D9 Rift_Runtime_Logging)
+rift_resolve_module_libs("Rift.Core.Runtime;Rift.Backend.OpenGL;Rift.Input;Rift.Backend.D3D9;Rift.Runtime.Logging" RIFT_WIN32_DEPS)
+
+target_link_libraries(Rift_Platform_Desktop_Windows ${RIFT_WIN32_DEPS})
