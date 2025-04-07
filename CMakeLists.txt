@@ -2,6 +2,8 @@ cmake_minimum_required(VERSION 3.14)
 project(Rift_Platform_Desktop_Windows VERSION 0.1.1)
 
 set(PLATFORM_WINDOWS_USE_WINDOWED_SUBSYSTEM FALSE)
+set(RIFT_WIN32_DEPS_LIST "Rift.Core.Runtime;Rift.Backend.OpenGL;Rift.Input;Rift.Runtime.Logging")
+set(RIFT_WIN32_ADDITIONAL_FILES "")
 
 add_library(
         Rift_Platform_Desktop_Windows
@@ -14,8 +16,18 @@ add_library(
         private/Engine/Platform/Windows/Win32_Thread.cpp
         private/Engine/Platform/Windows/Win32_Mutex.cpp
         private/Engine/Platform/Windows/Win32_EngineMain.cpp
-        private/Engine/Platform/Windows/Graphics/Win32_D3D9Context.cpp
+        ${RIFT_WIN32_ADDITIONAL_FILES}
+
 )
+
+if("Rift.Backend.D3D9" IN_LIST RIFT_ACTIVE_MODULES)
+    message(STATUS "The Rift.Backend.D3D9 module was identified as active; enabling D3D9 support.")
+
+    list(APPEND RIFT_WIN32_DEPS_LIST "Rift.Backend.D3D9")
+    list(APPEND RIFT_WIN32_ADDITIONAL_FILES "private/Engine/Platform/Windows/Graphics/Win32_D3D9Context.cpp")
+
+    target_compile_definitions(Rift_Platform_Desktop_Windows PUBLIC BACKEND_D3D9_ENABLED)
+endif()
 
 target_include_directories(
         Rift_Platform_Desktop_Windows
@@ -29,6 +41,6 @@ if (PLATFORM_WINDOWS_USE_WINDOWED_SUBSYSTEM)
     set_target_properties(${CMAKE_PROJECT_NAME} PROPERTIES LINK_FLAGS "/SUBSYSTEM:WINDOWS")
 endif ()
 
-rift_resolve_module_libs("Rift.Core.Runtime;Rift.Backend.OpenGL;Rift.Input;Rift.Backend.D3D9;Rift.Runtime.Logging" RIFT_WIN32_DEPS)
+rift_resolve_module_libs("${RIFT_WIN32_DEPS_LIST}" RIFT_WIN32_DEPS)
 
 target_link_libraries(Rift_Platform_Desktop_Windows ${RIFT_WIN32_DEPS})
