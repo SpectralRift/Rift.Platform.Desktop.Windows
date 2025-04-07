@@ -1,0 +1,21 @@
+{
+  "module": {
+    "name": "Rift.Platform.Desktop.Windows",
+    "category": "Platform Targets",
+    "version": "0.0.1",
+    "author": "r0neko",
+    "description": "Windows Platform Support",
+    "homepage": "https://github.com/SpectralRift/Rift.Platform.Desktop.Windows",
+    "type": "platformTarget",
+    "cmakeProject": "Rift_Platform_Desktop_Windows"
+  },
+  "providedTargets": [
+    "win32"
+  ],
+  "dependencies": [
+    "Rift.Backend.OpenGL",
+    "Rift.Runtime.Logging",
+    "Rift.Core.Runtime",
+    "Rift.Input"
+  ]
+}
